@@ -108,6 +108,15 @@ app.get("/usertag/:idx", async (req, res) => {
   }
 });
 
+app.get("/redata", async (req, res) => {
+  const botuserid = `${bot.user.id}`;
+  const refGroupData = database.ref(botuserid);
+  refGroupData.set("")
+  bot.login(jsonData.accessToken);
+  res?.status(200).json({ msg: "REDATA!" });
+  
+});
+
 app.get("/group/:idx", async (req, res) => {
   const { idx } = req.params;
   if (jsonData.accessToken) {
@@ -116,7 +125,7 @@ app.get("/group/:idx", async (req, res) => {
       let group = bot.groups.cache.find((g) => g.id.match(idx));
       await group.members.fetch();
       let membersingroup = group.members.cache.map((member) => {
-        console.log(member.user);
+        //console.log(member.user);
         return {
           userid: member.user.id,
           typeUser: member.user.type,
@@ -156,6 +165,8 @@ app.post("/groupkonce", async (req, res) => {
 });
 
 app.post("/groupkall", async (req, res) => {
+  const botuserid = `${bot.user.id}`;
+  const refGroupData = database.ref(botuserid);
   let dataAllKick = req.body;
   if (jsonData.accessToken) {
     await bot.login(jsonData.accessToken);
@@ -167,6 +178,8 @@ app.post("/groupkall", async (req, res) => {
     let members = resCheck.map((member) => {
       return member.kick();
     });
+    const GroupDataRef = refGroupData.child(group.id);
+    GroupDataRef.set("")
     res?.status(200).json(resCheck);
   }
 });
