@@ -1,0 +1,28 @@
+{
+    "certificate": "9e2518f761ad04fb2e4d61e6b94efacdb73d7a03dab7d71bffb934272808ac7b",
+    "accessToken": "Fr2lSDroA8kIysHG9xs2.7xvfRZ4mcJskgimND7No4G.qcwOIXIjHXYhgFihLAgK35BZKq9yAU3/rSNXGLCSedQ=",
+    "lastBindTimestamp": {
+        "buffer": {
+            "type": "Buffer",
+            "data": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ]
+        },
+        "offset": 0
+    },
+    "metaData": {
+        "keyId": "3766750",
+        "errorCode": "SUCCESS",
+        "encryptedKeyChain": "1eGPZ5zleQAQcoonoBSRONBU0PDYfq5jlFrbJuAlkEBQVN3eY+Z4SFXxSHzccdEyWfRg6h2e3WGw0nsT4Au64P0oSXzkSgnfeyb0FLIF9n/OLyIuVT1kAzYNqXk8OmlP",
+        "publicKey": "37m6GG/jCIwjQ3tDDXpTkj1XXlilpVUavOJH6gZNlAA=",
+        "e2eeVersion": "1",
+        "hashKeyChain": "xfa0+ZzKb6u+hUpgLbnQvg=="
+    }
+}
