@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 const database = admin.database();
 
 let jsonData = require("./json/token.json");
+const TeamX = [];
 
 Array.prototype.randomSite = function () {
   return this[Math.floor(Math.random() * this.length)];
@@ -44,20 +45,6 @@ bot.on("message", async (message) => {
   if (message.content == "ping") {
     await message.channel.send("pong");
   } 
-  // else if (message.content == "@@") {
-  //   let group = bot.groups.cache.find((g) => g.name.match(/LINE/));
-  //   await group.members.fetch();
-  //   let members = group.members.cache.map((member) => {
-  //     let user = bot.users.cache.get(member.user.id);
-  //     try {
-  //       user.send(`READY ${user}`);
-  //     } catch (e) {
-  //       console.log(e);
-  //     }
-  //   });
-  // } else if (message.content == "@") {
-  //   console.log(message);
-  // }
 });
 bot.on("message_read", (message, user) => {
   console.log(`${user.displayName} READ ${message.id} ${message.content}`);
@@ -156,7 +143,7 @@ app.post("/groupkonce", async (req, res) => {
      // return member.kick();
     });
     //res?.status(200).json({ memberX: resCheck });
-    console.log(dataFirstKick)
+    //console.log(dataFirstKick)
     res?.status(200).json(dataFirstKick)
   }
 });
