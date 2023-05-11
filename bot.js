@@ -3,12 +3,12 @@ const bot = new Client();
 const fs = require("fs");
 const admin = require("./src/util/firebaseadmin");
 const LineType = require("./src/util/typeline");
-const bodyParser = require('body-parser')
+const bodyParser = require("body-parser");
 const express = require("express");
 const cors = require("cors");
 const app = express();
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 //const firestore = admin.firestore();
 const database = admin.database();
 
@@ -44,7 +44,14 @@ bot.on("message", async (message) => {
   if (message.author.id == bot.user.id) return;
   if (message.content == "ping") {
     await message.channel.send("pong");
-  } 
+  } else if (message.content == "flex") {
+    let user = bot.users.cache.get("u0b499ce24e07b16ec12f8d0ba3ef8438");
+    user.send([{
+      type: "flex",
+      altText: "รายงานผลหวย",
+      
+    }]);
+  }
 });
 bot.on("message_read", (message, user) => {
   console.log(`${user.displayName} READ ${message.id} ${message.content}`);
@@ -75,7 +82,7 @@ bot.on("raw", (op, data) => {
       from: data?.message?._from,
       to: data?.message?.to,
     };
-    //console.log(op, msgR);
+    console.log(op, msgR);
   }
 });
 bot.login(jsonData.accessToken);
@@ -90,13 +97,13 @@ app.use(
 app.get("/usertag/:idx", async (req, res) => {
   const { idx } = req.params;
   if (jsonData.accessToken) {
-  bot.on('ready',()=>{
-        console.log(`logged as ${bot.user.displayName} ${bot.user.id}`)
-        //mention with user object
-        let user = bot.users.cache.get(idx)
-        user.send(`hello ${user}`)
-    })
-    bot.login(jsonData.accessToken)
+    bot.on("ready", () => {
+      console.log(`logged as ${bot.user.displayName} ${bot.user.id}`);
+      //mention with user object
+      let user = bot.users.cache.get(idx);
+      user.send(`hello ${user}`);
+    });
+    bot.login(jsonData.accessToken);
     res?.status(200).json({ msg: "TAGUSER!" });
   }
 });
@@ -109,7 +116,7 @@ app.get("/group/:idx", async (req, res) => {
       let group = bot.groups.cache.find((g) => g.id.match(idx));
       await group.members.fetch();
       let membersingroup = group.members.cache.map((member) => {
-        console.log(member.user)
+        console.log(member.user);
         return {
           userid: member.user.id,
           typeUser: member.user.type,
@@ -121,7 +128,7 @@ app.get("/group/:idx", async (req, res) => {
           picturePath: member.user.picturePath,
         };
       });
-      
+
       res?.status(200).json({
         botX: "member in group as " + group.name,
         membersIDX: membersingroup,
@@ -137,14 +144,14 @@ app.post("/groupkonce", async (req, res) => {
     let group = bot.groups.cache.find((g) => g.id.match(dataFirstKick.gid));
     await group.members.fetch();
     const resCheck = group.members.cache.filter((member) =>
-    dataFirstKick.ck.includes(member.user.id)
+      dataFirstKick.ck.includes(member.user.id)
     );
     let members = resCheck.map((member) => {
-     // return member.kick();
+      return member.kick();
     });
     //res?.status(200).json({ memberX: resCheck });
     //console.log(dataFirstKick)
-    res?.status(200).json(dataFirstKick)
+    res?.status(200).json(dataFirstKick);
   }
 });
 
@@ -158,7 +165,7 @@ app.post("/groupkall", async (req, res) => {
       (member) => !TeamX.includes(member.user.id)
     );
     let members = resCheck.map((member) => {
-      //return member.kick();
+      return member.kick();
     });
     res?.status(200).json(resCheck);
   }
@@ -170,12 +177,12 @@ app.post("/groupkuser", async (req, res) => {
     await bot.login(jsonData.accessToken);
     let group = bot.groups.cache.find((g) => g.id.match(dataUserKick.gid));
     await group.members.fetch();
-    
+
     const resCheck = group.members.cache.filter((member) =>
       dataUserKick.uid.includes(member.user.id)
     );
     let members = resCheck.map((member) => {
-      //return member.kick();
+      return member.kick();
     });
     res?.status(200).json(dataUserKick);
   }
