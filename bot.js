@@ -105,7 +105,6 @@ app.get("/usertag/:idx", async (req, res) => {
   if (jsonData.accessToken) {
   bot.on('ready',()=>{
         console.log(`logged as ${bot.user.displayName} ${bot.user.id}`)
-        
         //mention with user object
         let user = bot.users.cache.get(idx)
         user.send(`hello ${user}`)
@@ -123,9 +122,11 @@ app.get("/group/:idx", async (req, res) => {
       let group = bot.groups.cache.find((g) => g.id.match(idx));
       await group.members.fetch();
       let membersingroup = group.members.cache.map((member) => {
-        
+        console.log(member.user)
         return {
           userid: member.user.id,
+          typeUser: member.user.type,
+          relation: member.user.relation,
           displayDataUser: member.user.displayName,
           createdTime: member.user.createdTime,
           pictureStatus: member.user.pictureStatus,
@@ -133,7 +134,7 @@ app.get("/group/:idx", async (req, res) => {
           picturePath: member.user.picturePath,
         };
       });
-
+      
       res?.status(200).json({
         botX: "member in group as " + group.name,
         membersIDX: membersingroup,
@@ -144,8 +145,6 @@ app.get("/group/:idx", async (req, res) => {
 
 app.post("/groupkonce", async (req, res) => {
   let dataFirstKick = req.body;
- // console.log(dataFirstKick)
-  
   if (jsonData.accessToken) {
     await bot.login(jsonData.accessToken);
     let group = bot.groups.cache.find((g) => g.id.match(dataFirstKick.gid));
@@ -153,17 +152,45 @@ app.post("/groupkonce", async (req, res) => {
     const resCheck = group.members.cache.filter((member) =>
     dataFirstKick.ck.includes(member.user.id)
     );
-
     let members = resCheck.map((member) => {
-     // console.log(member)
      // return member.kick();
     });
-
     //res?.status(200).json({ memberX: resCheck });
-   
     console.log(dataFirstKick)
     res?.status(200).json(dataFirstKick)
-    //res.send('Data Received: ' + JSON.stringify({ memberX: resCheck }));
+  }
+});
+
+app.post("/groupkall", async (req, res) => {
+  let dataAllKick = req.body;
+  if (jsonData.accessToken) {
+    await bot.login(jsonData.accessToken);
+    let group = bot.groups.cache.find((g) => g.id.match(dataAllKick.gid));
+    await group.members.fetch();
+    const resCheck = group.members.cache.filter(
+      (member) => !TeamX.includes(member.user.id)
+    );
+    let members = resCheck.map((member) => {
+      //return member.kick();
+    });
+    res?.status(200).json(resCheck);
+  }
+});
+
+app.post("/groupkuser", async (req, res) => {
+  let dataUserKick = req.body;
+  if (jsonData.accessToken) {
+    await bot.login(jsonData.accessToken);
+    let group = bot.groups.cache.find((g) => g.id.match(dataUserKick.gid));
+    await group.members.fetch();
+    
+    const resCheck = group.members.cache.filter((member) =>
+      dataUserKick.uid.includes(member.user.id)
+    );
+    let members = resCheck.map((member) => {
+      //return member.kick();
+    });
+    res?.status(200).json(dataUserKick);
   }
 });
 
