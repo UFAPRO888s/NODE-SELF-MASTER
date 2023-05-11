@@ -3,10 +3,12 @@ const bot = new Client();
 const fs = require("fs");
 const admin = require("./src/util/firebaseadmin");
 const LineType = require("./src/util/typeline");
+const bodyParser = require('body-parser')
 const express = require("express");
 const cors = require("cors");
 const app = express();
-
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }))
 //const firestore = admin.firestore();
 const database = admin.database();
 
@@ -137,6 +139,31 @@ app.get("/group/:idx", async (req, res) => {
         membersIDX: membersingroup,
       });
     });
+  }
+});
+
+app.post("/groupkonce", async (req, res) => {
+  let dataFirstKick = req.body;
+ // console.log(dataFirstKick)
+  
+  if (jsonData.accessToken) {
+    await bot.login(jsonData.accessToken);
+    let group = bot.groups.cache.find((g) => g.id.match(dataFirstKick.gid));
+    await group.members.fetch();
+    const resCheck = group.members.cache.filter((member) =>
+    dataFirstKick.ck.includes(member.user.id)
+    );
+
+    let members = resCheck.map((member) => {
+     // console.log(member)
+     // return member.kick();
+    });
+
+    //res?.status(200).json({ memberX: resCheck });
+   
+    console.log(dataFirstKick)
+    res?.status(200).json(dataFirstKick)
+    //res.send('Data Received: ' + JSON.stringify({ memberX: resCheck }));
   }
 });
 
