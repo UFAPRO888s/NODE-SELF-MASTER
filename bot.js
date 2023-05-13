@@ -21,23 +21,23 @@ Array.prototype.randomSite = function () {
 
 bot.on("ready", async () => {
   const botuserid = `${bot.user.id}`;
-  const refGroupData = database.ref(botuserid);
-  let groups = await bot.groups.fetch();
-  await groups.map((group) => {
-    const GroupDataRef = refGroupData.child(group.id);
-    GroupDataRef.set({
-      id: group.id,
-      type: group.type,
-      picturePath: group.picturePath,
-      name: group.name,
-      createdTime: group.createdTime,
-      groupExtra: group.extra,
-      groupExtracreator: group.extra.groupExtra.creator,
-      memberMids: group.extra.groupExtra.memberMids,
-      inviteeMids: group.extra.groupExtra.inviteeMids,
-    });
-  });
-  console.log("GroupData SAVE-DATA");
+  // const refGroupData = database.ref(botuserid);
+  // let groups = await bot.groups.fetch();
+  // await groups.map((group) => {
+  //   const GroupDataRef = refGroupData.child(group.id);
+  //   GroupDataRef.set({
+  //     id: group.id,
+  //     type: group.type,
+  //     picturePath: group.picturePath,
+  //     name: group.name,
+  //     createdTime: group.createdTime,
+  //     groupExtra: group.extra,
+  //     groupExtracreator: group.extra.groupExtra.creator,
+  //     memberMids: group.extra.groupExtra.memberMids,
+  //     inviteeMids: group.extra.groupExtra.inviteeMids,
+  //   });
+  // });
+  console.log("ready DATA");
 });
 
 bot.on("message", async (message) => {
@@ -146,6 +146,28 @@ app.get("/group/:idx", async (req, res) => {
   }
 });
 
+app.post("/groupreject", async (req, res) => {
+  let datarejectKick = req.body;
+    console.log(datarejectKick)
+    if (jsonData.accessToken) {
+      await bot.login(jsonData.accessToken);
+      try {
+        let group = bot.groups.cache.find((g) => g.id.match(datarejectKick.gid));
+        await group.members.fetch();
+        const resCheck = group.members.cache.filter((member) =>
+            datarejectKick.ck.includes(member.user.id)
+        );
+        let members = resCheck.map((member) => {
+         return member.kick();
+        });
+        //console.log(members)
+        res?.status(200).json(datarejectKick);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+});
+
 app.post("/groupkonce", async (req, res) => {
   let dataFirstKick = req.body;
   if (jsonData.accessToken) {
@@ -176,10 +198,9 @@ app.post("/groupkall", async (req, res) => {
       (member) => !TeamX.includes(member.user.id)
     );
     let members = resCheck.map((member) => {
-      return member.kick();
+      return member.reject();
     });
-    const GroupDataRef = refGroupData.child(group.id);
-    GroupDataRef.set("")
+    console.log(members)
     res?.status(200).json(resCheck);
   }
 });
