@@ -46,11 +46,12 @@ bot.on("message", async (message) => {
     await message.channel.send("pong");
   } else if (message.content == "flex") {
     let user = bot.users.cache.get("u0b499ce24e07b16ec12f8d0ba3ef8438");
-    user.send([{
-      type: "flex",
-      altText: "รายงานผลหวย",
-      
-    }]);
+    user.send([
+      {
+        type: "flex",
+        altText: "รายงานผลหวย",
+      },
+    ]);
   }
 });
 bot.on("message_read", (message, user) => {
@@ -111,10 +112,9 @@ app.get("/usertag/:idx", async (req, res) => {
 app.get("/redata", async (req, res) => {
   const botuserid = `${bot.user.id}`;
   const refGroupData = database.ref(botuserid);
-  refGroupData.set("")
+  refGroupData.set("");
   bot.login(jsonData.accessToken);
   res?.status(200).json({ msg: "REDATA!" });
-  
 });
 
 app.get("/group/:idx", async (req, res) => {
@@ -147,25 +147,44 @@ app.get("/group/:idx", async (req, res) => {
 });
 
 app.post("/groupreject", async (req, res) => {
+  let groupDreject = req.body;
+  console.log(groupDreject)
+  if (jsonData.accessToken) {
+    bot.once("ready", async () => {
+      let group = bot.groups.cache.find((g) => g.id.match(groupDreject.gid));
+      await group.members.fetch();
+     // const resCheck = group.members.cache.filter((member) => {});
+     group.reject()
+     // let userX = groupDreject.ck.map((member) =>
+        
+     // );
+      //console.log(userX);
+    });
+    bot.login(jsonData.accessToken);
+    res?.status(200).json({ msg: "TAGUSER!" });
+  }
+});
+
+app.post("/groupreject", async (req, res) => {
   let datarejectKick = req.body;
-    console.log(datarejectKick)
-    if (jsonData.accessToken) {
-      await bot.login(jsonData.accessToken);
-      try {
-        let group = bot.groups.cache.find((g) => g.id.match(datarejectKick.gid));
-        await group.members.fetch();
-        const resCheck = group.members.cache.filter((member) =>
-            datarejectKick.ck.includes(member.user.id)
-        );
-        let members = resCheck.map((member) => {
-         return member.kick();
-        });
-        //console.log(members)
-        res?.status(200).json(datarejectKick);
-      } catch (e) {
-        console.log(e);
-      }
+  console.log(datarejectKick);
+  if (jsonData.accessToken) {
+    await bot.login(jsonData.accessToken);
+    try {
+      let group = bot.groups.cache.find((g) => g.id.match(datarejectKick.gid));
+      await group.members.fetch();
+      const resCheck = group.members.cache.filter((member) =>
+        datarejectKick.ck.includes(member.user.id)
+      );
+      let members = resCheck.map((member) => {
+        return member.kick();
+      });
+      //console.log(members)
+      res?.status(200).json(datarejectKick);
+    } catch (e) {
+      console.log(e);
     }
+  }
 });
 
 app.post("/groupkonce", async (req, res) => {
@@ -198,9 +217,9 @@ app.post("/groupkall", async (req, res) => {
       (member) => !TeamX.includes(member.user.id)
     );
     let members = resCheck.map((member) => {
-      return member.reject();
+      return member.kick();
     });
-    console.log(members)
+    console.log(members);
     res?.status(200).json(resCheck);
   }
 });
