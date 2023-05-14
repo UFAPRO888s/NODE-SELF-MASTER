@@ -37,6 +37,12 @@ bot.on("ready", async () => {
   //     inviteeMids: group.extra.groupExtra.inviteeMids,
   //   });
   // });
+  
+  
+  let group = bot.groups.cache.get('cc9c77546f5c5c6c7ffc202812681d0c6')
+  console.log(group);
+  await group.reject('u942212cbc68d134d9283c200ad45008e')
+  
   console.log("ready DATA");
 });
 
